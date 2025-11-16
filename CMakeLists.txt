@@ -23,7 +23,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 #
-# Verilog library
+# Verilator library
 #
 
 # based on verilator documentation
@@ -33,6 +33,68 @@ find_package(verilator REQUIRED HINTS $ENV{VERILATOR_ROOT})
 
 message(STATUS "VERILATOR_ROOT = ${VERILATOR_ROOT}")
 message(STATUS "VERILATOR_BIN  = ${VERILATOR_BIN}")
+
+#
+# googletest-verilog test bench generation
+#
+
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+
+function(googletest_verilog_testbench TB_TARGET)
+    cmake_parse_arguments(
+        TB                          # prefix
+        ""                          # list of options (true / false based on whether option is present or not)
+        "SOURCE"             # single value keywords
+        "INCLUDE_DIRS"              # multi-value keywords
+        ${ARGN}                     # arguments provided to the function
+    )
+
+    message(STATUS "SOURCE = ${TB_SOURCE}")
+    message(STATUS "TARGET = ${TB_TARGET}")
+    message(STATUS "INCLUDE_DIRS = ${TB_INCLUDE_DIRS}")
+
+    set(TB_VERILATED_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/verilated/${TB_TESTBENCH})
+    message(STATUS "TB_VERILATED_OUTPUT_DIR = ${TB_VERILATED_OUTPUT_DIR}")
+
+    get_filename_component(TB_SOURCE_BASENAME "${TB_SOURCE}" NAME_WE)
+    set(TB_TESTBENCH "${TB_SOURCE_BASENAME}TestBench")
+    set(TB_TESTBENCH_HEADER "${TB_VERILATED_OUTPUT_DIR}/${TB_TESTBENCH}.h")
+    set(TB_TESTBENCH_SOURCE "${TB_VERILATED_OUTPUT_DIR}/${TB_TESTBENCH}.cpp")
+
+    message(STATUS "TB_TESTBENCH = ${TB_TESTBENCH}")
+    message(STATUS "TB_TESTBENCH_HEADER = ${TB_TESTBENCH_HEADER}")
+    message(STATUS "TB_TESTBENCH_SOURCE = ${TB_TESTBENCH_SOURCE}")
+    message(STATUS "CMAKE_BINARY_DIR = " ${CMAKE_BINARY_DIR})
+    message(STATUS "CMAKE_CURRENT_BINARY_DIR = " ${CMAKE_CURRENT_BINARY_DIR})
+
+    # 1. verilate the verilog module    
+
+    verilate(${TB_TARGET} SOURCES ${TB_SOURCE} INCLUDE_DIRS ${TB_INCLUDE_DIRS} DIRECTORY ${TB_VERILATED_OUTPUT_DIR})
+    
+    # 2. generate test bench
+    set(TOOL_GENERATE_TESTBENCH ${CMAKE_SOURCE_DIR}/tools/generate_testbench.py)
+    
+    add_custom_command(
+        OUTPUT ${TB_TESTBENCH_HEADER} ${TB_TESTBENCH_SOURCE}
+        COMMAND ${Python3_EXECUTABLE} ${TOOL_GENERATE_TESTBENCH} --name ${TB_TESTBENCH} --verilated-header-dir ${TB_VERILATED_OUTPUT_DIR} --output-header ${TB_TESTBENCH_HEADER} --output-source ${TB_TESTBENCH_SOURCE}
+        DEPENDS ${TOOL_GENERATE_TESTBENCH} ${TB_SOURCE}
+    )
+
+    target_sources(${TB_TARGET} PRIVATE ${TB_TESTBENCH_HEADER} ${TB_TESTBENCH_SOURCE})
+
+    set(TB_TESTBENCH_TARGET "googletest_verilog_testbench-${TB_TESTBENCH}")
+
+    # 3. use a custom target to force cmake to create testbench first, before compiling TARGET
+
+    add_custom_target(${TB_TESTBENCH_TARGET}
+        DEPENDS ${TB_TESTBENCH_HEADER} ${TB_TESTBENCH_SOURCE}
+    )
+
+    add_dependencies(${TB_TARGET} ${TB_TESTBENCH_TARGET})
+    
+endfunction()
+
+
 
 #
 # googletest-verilog static library
@@ -82,7 +144,7 @@ add_executable(googletest-verilog-example
     example/Counter.test.cpp
 )
 
-verilate(googletest-verilog-example SOURCES example/Counter.v)
+googletest_verilog_testbench(googletest-verilog-example SOURCE example/Counter.v)
 
 target_link_libraries(googletest-verilog-example PRIVATE
     googletest-verilog    

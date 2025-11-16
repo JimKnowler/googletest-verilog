@@ -4,10 +4,7 @@ using namespace testing;
 #include "googletest-verilog/googletest-verilog.h"
 using namespace gtestverilog;
 
-// JK - disable, until we get automated test bench generation working again
-#if 0
-
-#include "googletest-verilog-example/CounterTestBench.h"
+#include "CounterTestBench.h"
 using namespace countertestbench;
 
 namespace {
@@ -92,5 +89,3 @@ TEST_F(Counter, ShouldHandleLargeTraces) {
 
     ASSERT_THAT(testBench.trace, MatchesTrace(traceExpected));
 }
-
-#endif
