@@ -1,4 +1,4 @@
-#include "PortDescription.h"
+#include "googletest-verilog/PortDescription.h"
 
 namespace gtestverilog {
 
