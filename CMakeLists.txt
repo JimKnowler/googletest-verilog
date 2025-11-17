@@ -56,7 +56,7 @@ function(googletest_verilog_testbench TB_TARGET)
     cmake_parse_arguments(
         TB                          # prefix
         ""                          # list of options (true / false based on whether option is present or not)
-        "SOURCE".                   # single value keywords
+        "SOURCE"                    # single value keywords
         "INCLUDE_DIRS"              # multi-value keywords
         ${ARGN}                     # arguments provided to the function
     ) 
