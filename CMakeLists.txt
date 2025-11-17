@@ -40,14 +40,26 @@ message(STATUS "VERILATOR_BIN  = ${VERILATOR_BIN}")
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
+set(TB_TOOL_GENERATE_TESTBENCH ${CMAKE_CURRENT_SOURCE_DIR}/tools/generate_testbench.py)
+message(STATUS "TB_TOOL_GENERATE_TESTBENCH = ${TB_TOOL_GENERATE_TESTBENCH}")
+
+set(TB_PYTHON ${Python3_EXECUTABLE})
+message(STATUS "TB_PYTHON = [${TB_PYTHON}]")
+
+set_property(GLOBAL PROPERTY TB_PYTHON_GLOBAL "${TB_PYTHON}")
+set_property(GLOBAL PROPERTY TB_TOOL_GENERATE_TESTBENCH_GLOBAL "${TB_TOOL_GENERATE_TESTBENCH}")
+
 function(googletest_verilog_testbench TB_TARGET)
+    get_property(TB_PYTHON GLOBAL PROPERTY TB_PYTHON_GLOBAL)
+    get_property(TB_TOOL_GENERATE_TESTBENCH GLOBAL PROPERTY TB_TOOL_GENERATE_TESTBENCH_GLOBAL)
+
     cmake_parse_arguments(
         TB                          # prefix
         ""                          # list of options (true / false based on whether option is present or not)
-        "SOURCE"             # single value keywords
+        "SOURCE".                   # single value keywords
         "INCLUDE_DIRS"              # multi-value keywords
         ${ARGN}                     # arguments provided to the function
-    )
+    ) 
 
     message(STATUS "SOURCE = ${TB_SOURCE}")
     message(STATUS "TARGET = ${TB_TARGET}")
@@ -64,25 +76,25 @@ function(googletest_verilog_testbench TB_TARGET)
     message(STATUS "TB_VERILATED_OUTPUT_DIR = ${TB_VERILATED_OUTPUT_DIR}")
     message(STATUS "TB_TESTBENCH_HEADER = ${TB_TESTBENCH_HEADER}")
     message(STATUS "TB_TESTBENCH_SOURCE = ${TB_TESTBENCH_SOURCE}")
-    message(STATUS "CMAKE_BINARY_DIR = " ${CMAKE_BINARY_DIR})
-    message(STATUS "CMAKE_CURRENT_BINARY_DIR = " ${CMAKE_CURRENT_BINARY_DIR})
+    message(STATUS "CMAKE_BINARY_DIR = ${CMAKE_BINARY_DIR}")
+    message(STATUS "CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
 
     # 1. verilate the verilog module    
-
     verilate(${TB_TARGET} SOURCES ${TB_SOURCE} INCLUDE_DIRS ${TB_INCLUDE_DIRS} DIRECTORY ${TB_VERILATED_OUTPUT_DIR})
     
     # 2. generate test bench
-    set(TOOL_GENERATE_TESTBENCH ${CMAKE_CURRENT_SOURCE_DIR}/tools/generate_testbench.py)
+    message(STATUS "TB_PYTHON = [${TB_PYTHON}]")
+    message(STATUS "TB_TOOL_GENERATE_TESTBENCH = ${TB_TOOL_GENERATE_TESTBENCH}")
     
     add_custom_command(
         OUTPUT ${TB_TESTBENCH_HEADER} ${TB_TESTBENCH_SOURCE}
-        COMMAND ${Python3_EXECUTABLE} ${TOOL_GENERATE_TESTBENCH} --name ${TB_TESTBENCH} --verilated-header-dir ${TB_VERILATED_OUTPUT_DIR} --output-header ${TB_TESTBENCH_HEADER} --output-source ${TB_TESTBENCH_SOURCE}
-        DEPENDS ${TOOL_GENERATE_TESTBENCH} ${TB_SOURCE}
+        COMMAND ${TB_PYTHON} ${TB_TOOL_GENERATE_TESTBENCH} --name ${TB_TESTBENCH} --verilated-header-dir ${TB_VERILATED_OUTPUT_DIR} --output-header ${TB_TESTBENCH_HEADER} --output-source ${TB_TESTBENCH_SOURCE}
+        DEPENDS ${TB_TOOL_GENERATE_TESTBENCH} ${TB_SOURCE}
     )
 
     target_sources(${TB_TARGET} PRIVATE ${TB_TESTBENCH_HEADER} ${TB_TESTBENCH_SOURCE})
 
-    set(TB_TESTBENCH_TARGET "googletest_verilog_testbench-${TB_TESTBENCH}")
+    set(TB_TESTBENCH_TARGET "googletest_verilog_testbench_${TB_TESTBENCH}")
 
     # 3. use a custom target to force cmake to create testbench first, before compiling TARGET
 
