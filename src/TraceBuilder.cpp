@@ -1,4 +1,4 @@
-#include "gtest-verilog/TraceBuilder.h"
+#include "gtestverilog/TraceBuilder.h"
 
 namespace gtestverilog {
 

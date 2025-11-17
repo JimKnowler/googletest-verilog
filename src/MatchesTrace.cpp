@@ -1,4 +1,4 @@
-#include "gtest-verilog/MatchesTrace.h"
+#include "gtestverilog/MatchesTrace.h"
 
 #include <algorithm>
 

@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 using namespace testing;
 
-#include "gtest-verilog/gtest-verilog.h"
+#include "gtestverilog/gtest-verilog.h"
 using namespace gtestverilog;
 
 namespace {

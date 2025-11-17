@@ -1,4 +1,4 @@
-#include "gtest-verilog/ConsoleColour.h"
+#include "gtestverilog/ConsoleColour.h"
 
 namespace gtestverilog {
 

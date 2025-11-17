@@ -100,7 +100,7 @@ endfunction()
 
 include_directories(include)
 
-add_library(googletest-verilog
+add_library(gtestverilog
     src/ConsoleColour.cpp
     src/MatchesTrace.cpp
     src/PortDescription.cpp
@@ -112,13 +112,13 @@ add_library(googletest-verilog
 # add googletest/googlemock includes, without linking to gtest
 get_target_property(GTEST_INCLUDES GTest::gtest INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(GMOCK_INCLUDES GTest::gmock INTERFACE_INCLUDE_DIRECTORIES)
-target_include_directories(googletest-verilog PUBLIC ${GTEST_INCLUDES} ${GMOCK_INCLUDES})
+target_include_directories(gtestverilog PUBLIC ${GTEST_INCLUDES} ${GMOCK_INCLUDES})
 
 #
 # googletest-verilog internal Unit Tests
 #
 
-add_executable(googletest-verilog-test
+add_executable(gtestverilog_test
     test/main.cpp
     test/MatchesTrace.test.cpp
     test/Step.test.cpp
@@ -127,27 +127,27 @@ add_executable(googletest-verilog-test
     test/TraceBuilder.test.cpp
 )
 
-target_link_libraries(googletest-verilog-test
+target_link_libraries(gtestverilog_test
     gtest
     gmock
-    googletest-verilog
+    gtestverilog
 )
 
 #
 # googletest-verilog Example Usage
 #
 
-add_executable(googletest-verilog-example
+add_executable(gtestverilog_example
     example/main.cpp
     example/Counter.test.cpp
 )
 
-googletest_verilog_testbench(googletest-verilog-example SOURCE example/Counter.v)
+googletest_verilog_testbench(gtestverilog_example SOURCE example/Counter.v)
 
-target_link_libraries(googletest-verilog-example PRIVATE
-    googletest-verilog    
+target_link_libraries(gtestverilog_example PRIVATE
+    gtestverilog    
     gtest
     gmock
 )
 
-target_include_directories(googletest-verilog-example PRIVATE ${VERILATOR_INCLUDE_DIRS})
+target_include_directories(gtestverilog_example PRIVATE ${VERILATOR_INCLUDE_DIRS})

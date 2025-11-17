@@ -1,4 +1,4 @@
-#include "gtest-verilog/Trace.h"
+#include "gtestverilog/Trace.h"
 
 #include <cstring>
 #include <cmath>
