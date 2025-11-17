@@ -72,7 +72,7 @@ function(googletest_verilog_testbench TB_TARGET)
     verilate(${TB_TARGET} SOURCES ${TB_SOURCE} INCLUDE_DIRS ${TB_INCLUDE_DIRS} DIRECTORY ${TB_VERILATED_OUTPUT_DIR})
     
     # 2. generate test bench
-    set(TOOL_GENERATE_TESTBENCH ${CMAKE_SOURCE_DIR}/tools/generate_testbench.py)
+    set(TOOL_GENERATE_TESTBENCH ${CMAKE_CURRENT_SOURCE_DIR}/tools/generate_testbench.py)
     
     add_custom_command(
         OUTPUT ${TB_TESTBENCH_HEADER} ${TB_TESTBENCH_SOURCE}
