@@ -138,7 +138,7 @@ def write_header_file():
     header_top = """
 #pragma once
 
-#include "gtestverilog/gtest-verilog.h"
+#include "gtestverilog/gtestverilog.h"
 #include "{verilated_header_filepath}"
 
 namespace {namespace} {{
