@@ -94,8 +94,6 @@ function(googletest_verilog_testbench TB_TARGET)
     
 endfunction()
 
-
-
 #
 # googletest-verilog static library
 #
@@ -114,7 +112,7 @@ add_library(googletest-verilog
 # add googletest/googlemock includes, without linking to gtest
 get_target_property(GTEST_INCLUDES GTest::gtest INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(GMOCK_INCLUDES GTest::gmock INTERFACE_INCLUDE_DIRECTORIES)
-target_include_directories(googletest-verilog PRIVATE ${GTEST_INCLUDES} ${GMOCK_INCLUDES})
+target_include_directories(googletest-verilog PUBLIC ${GTEST_INCLUDES} ${GMOCK_INCLUDES})
 
 #
 # googletest-verilog internal Unit Tests
