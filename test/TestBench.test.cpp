@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 using namespace testing;
 
-#include "gtestverilog/gtestverilog.h"
+#include "gtest-verilog/gtest-verilog.h"
 using namespace gtestverilog;
 
 namespace {

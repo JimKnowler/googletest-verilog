@@ -1,4 +1,4 @@
-#include "Step.h"
+#include "gtest-verilog/Step.h"
 
 namespace gtestverilog {
 

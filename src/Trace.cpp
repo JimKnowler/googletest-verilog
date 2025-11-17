@@ -1,4 +1,4 @@
-#include "Trace.h"
+#include "gtest-verilog/Trace.h"
 
 #include <cstring>
 #include <cmath>
@@ -42,7 +42,7 @@ namespace gtestverilog {
     static void renderTimeline(std::ostream& os, size_t x, size_t numSteps) {
         char buffer[64];
 
-        sprintf(buffer, "%*s", int(x), " ");
+        snprintf(buffer, sizeof(buffer), "%*s", int(x), " ");
         os << buffer;
 
         const int kDividerSize = 5;
@@ -50,7 +50,7 @@ namespace gtestverilog {
 
         for (int i=0; i<numDividers;i++) {
             char divider[8];
-            sprintf(divider, "|%-*d", kDividerSize-1, i * kDividerSize);
+            snprintf(divider, sizeof(divider), "|%-*d", kDividerSize-1, i * kDividerSize);
             os << divider;
         }
 
@@ -65,12 +65,12 @@ namespace gtestverilog {
         os << ConsoleColour().fg(portColour);
 
         char buffer[64];
-        sprintf(buffer, "  %*s ", int(maxPortLabelSize), renderPortName ? portDesc.label() : "");
+        snprintf(buffer, sizeof(buffer), "  %*s ", int(maxPortLabelSize), renderPortName ? portDesc.label() : "");
         os << buffer;
 
         os << ConsoleColour().reset();
         if (portDesc.width() > 1) {
-            sprintf(buffer, "[%02lu:%02lu] ", ((nibbleIndex + 1) * 4) - 1, (nibbleIndex * 4));
+            snprintf(buffer, sizeof(buffer), "[%02lu:%02lu] ", ((nibbleIndex + 1) * 4) - 1, (nibbleIndex * 4));
             os << buffer;
         } else {
             os << "....... ";
@@ -98,7 +98,7 @@ namespace gtestverilog {
                 }
 
                 uint8_t nibble = uint8_t( (value >> (nibbleIndex * 4)) & 0xf);
-                sprintf(buffer, "%X", nibble);
+                snprintf(buffer, sizeof(buffer), "%X", nibble);
                 // use null terminator to force limit to a single hex character
                 buffer[1] = 0;
                 

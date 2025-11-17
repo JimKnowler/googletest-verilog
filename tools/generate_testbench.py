@@ -26,7 +26,7 @@ verilated_header_filepath = None
 for filepath in verilated_header_filepaths:
     with open(filepath, "r") as file:
         for line in file:
-            results = re.search("\w*VL_[IN|OUT].*\((.*),(.*),(.*)\);\w*", line.lstrip().rstrip())
+            results = re.search(r"\w*VL_[IN|OUT].*\((.*),(.*),(.*)\);\w*", line.lstrip().rstrip())
             if results:
                 # this is the header with port definitions
 
@@ -138,7 +138,7 @@ def write_header_file():
     header_top = """
 #pragma once
 
-#include "gtestverilog/gtestverilog.h"
+#include "gtest-verilog/gtest-verilog.h"
 #include "{verilated_header_filepath}"
 
 namespace {namespace} {{
