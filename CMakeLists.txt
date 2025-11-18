@@ -68,7 +68,7 @@ function(googletest_verilog_testbench TB_TARGET)
     get_filename_component(TB_SOURCE_BASENAME "${TB_SOURCE}" NAME_WE)
     set(TB_TESTBENCH "${TB_SOURCE_BASENAME}TestBench")
 
-    set(TB_VERILATED_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/verilated/${TB_TESTBENCH})
+    set(TB_VERILATED_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/verilated/${TB_TARGET}/${TB_TESTBENCH})
     set(TB_TESTBENCH_HEADER "${TB_VERILATED_OUTPUT_DIR}/${TB_TESTBENCH}.h")
     set(TB_TESTBENCH_SOURCE "${TB_VERILATED_OUTPUT_DIR}/${TB_TESTBENCH}.cpp")
 
@@ -94,7 +94,7 @@ function(googletest_verilog_testbench TB_TARGET)
 
     target_sources(${TB_TARGET} PRIVATE ${TB_TESTBENCH_HEADER} ${TB_TESTBENCH_SOURCE})
 
-    set(TB_TESTBENCH_TARGET "googletest_verilog_testbench_${TB_TESTBENCH}")
+    set(TB_TESTBENCH_TARGET "googletest_verilog_testbench_${TB_TARGET}_${TB_TESTBENCH}")
 
     # 3. use a custom target to force cmake to create testbench first, before compiling TARGET
 
