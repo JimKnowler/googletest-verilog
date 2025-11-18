@@ -117,6 +117,7 @@ add_library(gtestverilog
     src/Step.cpp
     src/Trace.cpp
     src/TraceBuilder.cpp
+    src/VerilatorTimestamp.cpp
 )
 
 target_include_directories(gtestverilog
