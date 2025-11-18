@@ -110,8 +110,6 @@ endfunction()
 # googletest-verilog static library
 #
 
-include_directories(include)
-
 add_library(gtestverilog
     src/ConsoleColour.cpp
     src/MatchesTrace.cpp
@@ -119,6 +117,11 @@ add_library(gtestverilog
     src/Step.cpp
     src/Trace.cpp
     src/TraceBuilder.cpp
+)
+
+target_include_directories(gtestverilog
+    PUBLIC
+        include
 )
 
 # add googletest/googlemock includes, without linking to gtest
